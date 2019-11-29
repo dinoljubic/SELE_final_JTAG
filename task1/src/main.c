@@ -1,4 +1,5 @@
-/* A program to an Arduino board that receives UART (9600,8,N,1) commands from
+/* Assignment:
+ * A program to an Arduino board that receives UART (9600,8,N,1) commands from
  * a PC and controls the PIC32 through its JTAG port using the corresponding 
  * IEEE 1149.1 TAP controller. The commands (composed by a single character) 
  * are the following:
@@ -11,6 +12,16 @@
  * Students: Mateusz Dudek, Nowen Adamczak, Dino Ljubic
  */
 
+#include "io.h"
+#include "serial.h"
+
 int main() {
-    while(1){};
+
+    io_init();
+    usart_init();
+    // TODO: last module for assignment T1
+
+    while(1){
+        // Do nothing
+    };
 }
