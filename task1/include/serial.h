@@ -6,11 +6,12 @@
 #include <avr/interrupt.h>
 
 #define	BAUD 57600                   // Desired baud rate
-#define BAUDGEN ((16000000/(16*BAUD))-1)  // Calculated divider (may under/overflow for some cases)
+//#define BAUDGEN ((16000000/(16*BAUD))-1)  // Calculated divider (may under/overflow for some cases)
+// Pre-calculated BAUDGEN for 9600 baud
+#define BAUDGEN 103
 
-void usart_init( void );
-void usart_transmit(uint8_t data);
-uint8_t usart_receive( void );
+void serial_init( void );
+void serial_transmit( uint8_t size, uint8_t *data );
 
 ISR (USART_RX_vect);
 
