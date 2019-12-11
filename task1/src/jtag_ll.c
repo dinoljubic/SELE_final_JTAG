@@ -81,7 +81,7 @@ static void jtag_ll_shiftData( uint8_t BitStreamSize, uint8_t *dataIn, uint8_t *
 
     uint8_t value, readVal, i;
 
-    // TODO: TBD if these are declared as static
+    // TODO: reset to zero or implement DC's
     static uint8_t inBuffer[JTAG_LL_MAX_BITSTREAM_LEN/8];
     static uint8_t outBuffer[JTAG_LL_MAX_BITSTREAM_LEN/8];
 

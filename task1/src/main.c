@@ -19,7 +19,6 @@ int main() {
 
     io_init();
     serial_init();
-    // TODO: last module for assignment T1
 
     while(1){
         // Do nothing

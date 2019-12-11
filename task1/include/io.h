@@ -23,15 +23,15 @@
 
 
 // Pin definitions
-#define	JTAG_TRST_PIN   IO_PIN0
-#define	JTAG_TRST_PORT  IO_PORTB
+// #define	JTAG_TRST_PIN   IO_PIN0
+// #define	JTAG_TRST_PORT  IO_PORTB
 #define	JTAG_CLK_PIN    IO_PIN1
 #define	JTAG_CLK_PORT   IO_PORTB
-#define JTAG_TMS_PIN    IO_PIN2
+#define JTAG_TMS_PIN    IO_PIN0
 #define JTAG_TMS_PORT   IO_PORTB
-#define	JTAG_TDI_PIN    IO_PIN3
+#define	JTAG_TDI_PIN    IO_PIN2
 #define	JTAG_TDI_PORT   IO_PORTB
-#define	JTAG_TDO_PIN    IO_PIN4
+#define	JTAG_TDO_PIN    IO_PIN3
 #define	JTAG_TDO_PORT   IO_PORTB
 
 
