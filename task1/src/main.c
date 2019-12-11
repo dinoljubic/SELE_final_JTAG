@@ -21,6 +21,6 @@ int main() {
     serial_init();
 
     while(1){
-        // Do nothing
+        
     };
 }

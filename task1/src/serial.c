@@ -4,9 +4,10 @@
 static void usart_init( void ){
     UBRR0 = BAUDGEN;
     // enable reciver, enable recive interrupt, 8 bit mode
-    UCSR0B = (1 << RXEN0) | (1 << RXCIE0);
+    UCSR0B = (1 << RXEN0) | (1 << RXCIE0) | (1 << TXEN0);
     // 1 stop bit, 8 bit mode
     UCSR0C = (1 << UCSZ00) | (1 << UCSZ01);
+    //UCSR0C = (1 << USBS0) | (3 << UCSZ00);
 
     sei();
 }
@@ -22,11 +23,15 @@ static uint8_t usart_receive( void ){
     /* Wait for data to be received */
     while (!(UCSR0A & (1<<RXC0)));
     /* Get and return received data from buffer */
-    return UDR0;
+    uint8_t udr = UDR0;
+    usart_transmit(udr);
+    return udr;
 }
 
 void serial_init( void ){
     usart_init(  );
+
+    serial_transmit(19, "USART initialized.");
 }
 
 void serial_transmit( uint8_t size, uint8_t *data ){
