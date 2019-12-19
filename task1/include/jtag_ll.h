@@ -3,7 +3,7 @@
 
 #include "io.h"
 
-#define JTAG_LL_MAX_BITSTREAM_LEN  64
+#define JTAG_LL_MAX_BITSTREAM_LEN  256
 
 void jtag_ll_resetAndIdle( void );
 void jtag_ll_setIR( uint8_t BitStreamSize, uint8_t *data );

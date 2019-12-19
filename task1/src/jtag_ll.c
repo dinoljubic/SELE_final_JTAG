@@ -1,6 +1,5 @@
 #include "jtag_ll.h"
 
-
 static void jtag_ll_fsmTransition( uint8_t stepNum, uint8_t tmsStream );
 static void jtag_ll_clk( void );
 static void jtag_ll_shiftData( uint8_t BitStreamSize, uint8_t *dataIn, uint8_t *dataOut );
@@ -21,13 +20,12 @@ void jtag_ll_resetAndIdle( void ){
     jtag_ll_clk();
 }
 
-
 void jtag_ll_setIR( uint8_t BitStreamSize, uint8_t *data ){
     // Idle -> ShiftIR
     jtag_ll_fsmTransition(4, 0b0011);
     jtag_ll_shiftData(BitStreamSize, 0, data);
     // Exit1-IR -> Idle
-    jtag_ll_fsmTransition(2, 0b10);
+    jtag_ll_fsmTransition(2, 0b01);
 }
 
 void jtag_ll_getIR( uint8_t BitStreamSize, uint8_t *data ){
@@ -35,7 +33,7 @@ void jtag_ll_getIR( uint8_t BitStreamSize, uint8_t *data ){
     jtag_ll_fsmTransition(4, 0b0011);
     jtag_ll_shiftData(BitStreamSize, data, 0);
     // Exit1-IR -> Idle
-    jtag_ll_fsmTransition(2, 0b10);
+    jtag_ll_fsmTransition(2, 0b01);
 }
 
 void jtag_ll_setDR( uint8_t BitStreamSize, uint8_t *data ){
@@ -43,15 +41,15 @@ void jtag_ll_setDR( uint8_t BitStreamSize, uint8_t *data ){
     jtag_ll_fsmTransition(3, 0b001);
     jtag_ll_shiftData(BitStreamSize, 0, data);
     // Exit1-DR -> Idle
-    jtag_ll_fsmTransition(2, 0b10);
+    jtag_ll_fsmTransition(2, 0b01);
 }
 
 void jtag_ll_getDR( uint8_t BitStreamSize, uint8_t *data ){
     // Idle -> ShiftIR
-    jtag_ll_fsmTransition(4, 0b0011);
-    jtag_ll_shiftData(BitStreamSize, 0, data);
+    jtag_ll_fsmTransition(3, 0b001);
+    jtag_ll_shiftData(BitStreamSize, data, 0);
     // Exit1-DR -> Idle
-    jtag_ll_fsmTransition(2, 0b10);
+    jtag_ll_fsmTransition(2, 0b01);
 }
 
 
@@ -90,21 +88,6 @@ static void jtag_ll_shiftData( uint8_t BitStreamSize, uint8_t *dataIn, uint8_t *
     if (dataOut == 0)
         dataOut = outBuffer;
 
-    /* 
-    // Skipped, assuming that function only exits state, does not enter into it
-
-    // If BitStreamSize is 0, then skip data shift, go straight to Exit-1
-    if (BitStreamSize == 0){
-        io_setPin(JTAG_TMS_PORT, JTAG_TMS_PIN, 1);
-        jtag_ll_clk(  );
-        return;
-    }
-
-    // Assert TMS to low and enter Shift
-    io_setPin(JTAG_TMS_PORT, JTAG_TMS_PIN, 0);
-    jtag_ll_clk();
-    */
-
     uint8_t byte, bit;
 
     for (i=0;i<BitStreamSize;i++){
@@ -115,14 +98,17 @@ static void jtag_ll_shiftData( uint8_t BitStreamSize, uint8_t *dataIn, uint8_t *
         if(i == BitStreamSize-1){
             io_setPin(JTAG_TMS_PORT, JTAG_TMS_PIN, 1);
         }
-      
+        
         value = dataOut[byte] & (1<<bit);
         io_setPin(JTAG_TDO_PORT, JTAG_TDO_PIN, value);
 
-        jtag_ll_clk();
-
         readVal = io_getPin(JTAG_TDI_PORT, JTAG_TDI_PIN);
         dataIn[byte] |= (readVal<<bit);
+
+        jtag_ll_clk();
     }
+
+    // io_setPin(JTAG_TMS_PORT, JTAG_TMS_PIN, 1);
+    // jtag_ll_clk();
 }
 

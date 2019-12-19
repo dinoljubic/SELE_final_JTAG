@@ -31,13 +31,46 @@ static uint8_t usart_receive( void ){
 void serial_init( void ){
     usart_init(  );
 
-    serial_transmit(19, "USART initialized.");
+    serial_transmit( "JTAG driver for PIC32MX320F128H.", sizeof("JTAG driver for PIC32MX320F128H.") );
+    serial_transmit("Controls:", sizeof("Controls:"));
+    serial_transmit("0 - Turn on LED", sizeof("0 - Turn on LED"));
+    serial_transmit("1 - Turn on LED", sizeof("1 - Turn on LED"));
+    serial_transmit("d - display uC's IDCODE", sizeof("d - display uC's IDCODE"));
+    serial_transmit("b - read button state", sizeof("b - read button state"));
 }
+    
 
-void serial_transmit( uint8_t size, uint8_t *data ){
+void serial_transmit( char *data, uint8_t size ){
     for (uint8_t i=0;i<size;i++){
         usart_transmit( data[i] );
     }
+    usart_transmit('\r');
+    usart_transmit('\n');
+}
+
+void serial_transmitHex( uint8_t* data, uint8_t size ){
+    usart_transmit('0');
+    usart_transmit('x');
+    uint8_t ch, nib;
+    for (int8_t i=size-1;i>=0;i--){
+        // First nibble
+        nib = (data[i] & 0xf0) >> 4;
+        if (nib<10)
+            ch=nib+48;
+        else
+            ch=nib+55;
+        usart_transmit(ch);
+
+        // Second nibble
+        nib = data[i] & 0x0f;
+        if (nib<10)
+            ch=nib+48;
+        else
+            ch=nib+55;
+        usart_transmit(ch);
+    }
+    usart_transmit('\r');
+    usart_transmit('\n');
 }
 
 static void serial_data_parser( uint8_t data ){
@@ -45,17 +78,20 @@ static void serial_data_parser( uint8_t data ){
     switch(data){
     case 'd':
         jtag_getIDCode((uint8_t*)&read);
-        serial_transmit(sizeof(read), (uint8_t*)&read);
+        //serial_transmit(sizeof(read), (uint8_t*)&read);
         break;
     case '0':
-        jtag_setPin(PIC32_LED_PIN, 0);
+        jtag_setPin(PIC32_LED_CELL, 0);
         break;
     case '1':
-        jtag_setPin(PIC32_LED_PIN, 1);
+        jtag_setPin(PIC32_LED_CELL, 1);
         break;
     case 'b':
-        data = jtag_getPin(PIC32_BUTTON_PIN);
-        serial_transmit(1, (uint8_t*)&read);
+        data = jtag_getPin(PIC32_BUTTON_CELL);
+        if (data==1)
+            serial_transmit( " OFF", (uint8_t)4 );
+        else if (data==0)
+            serial_transmit( " ON", (uint8_t)3 );
         break;
     }
 }

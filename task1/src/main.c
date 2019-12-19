@@ -14,11 +14,15 @@
 
 #include "io.h"
 #include "serial.h"
+#include "jtag.h"
 
 int main() {
 
     io_init();
     serial_init();
+
+    // JTAG init - set LED to output
+    jtag_setPin(PIC32_LED_CELL+1, 1);
 
     while(1){
         
