@@ -21,8 +21,8 @@ int main() {
     io_init();
     serial_init();
 
-    // JTAG init - set LED to output
-    jtag_setPin(PIC32_LED_CELL+1, 1);
+    // JTAG init
+    jtag_ll_resetAndIdle();
 
     while(1){
         

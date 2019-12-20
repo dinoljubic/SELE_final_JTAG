@@ -1,4 +1,5 @@
 #include "jtag_ll.h"
+#include "stdlib.h"
 
 static void jtag_ll_fsmTransition( uint8_t stepNum, uint8_t tmsStream );
 static void jtag_ll_clk( void );
